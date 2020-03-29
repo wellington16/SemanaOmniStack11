@@ -5,7 +5,6 @@ module.exports = {
         const { page = 1 } = request.query
 
         const [count]  =  await connection('incidents').count()
-        console.log(count)
 
         const incidents = await connection('incidents')
             .join('ongs','ongs.id','=','incidents.ong_id')
@@ -19,19 +18,11 @@ module.exports = {
                 'ongs.city',
                 'ongs.uf'
             ])
-            .then((data) => {
-                console.log("get data")
-                return data
-            })
             .catch((err) => 
-                {console.log( err); throw err }
+                {console.log( err) }
             )
-            .finally(() => {
-                // connection.destroy();
-            });
 
         response.header('X-Total-Count',count['count(*)'])
-
         return response.json(incidents)
     },
 
@@ -59,7 +50,7 @@ module.exports = {
             .first()
         if (incident.ong_id != ong_id){
             return response.status(401)
-                .json({error:'Operation not permiitted.'})
+                .json({error:'Operation not permitted.'})
 
         }
         
